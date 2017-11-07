@@ -1,15 +1,6 @@
 
 #HELPER FUNCTIONS AND STRUCTURES
 
-def readInt(text):
-    while True:
-        try:
-            cmd = int(input(text))
-            if cmd < 0: raise ValueError("Valoare invalida, incercati din nou... ")
-            return cmd
-        except ValueError:
-            print("Valoare invalida, incercati din nou... ")
-
 
 def convertToLower(string):
     '''
@@ -19,18 +10,6 @@ def convertToLower(string):
     '''
     string = string.lower()
     return string
-
-
-def testConvertToLower():
-    '''
-    Function to test the convertToLower function
-    Takes no arguments
-    Doesn't return anything
-    '''
-    assert convertToLower('WaTeR') == 'water'
-    assert convertToLower('APA') == 'apa'
-    assert convertToLower('') == ''
-    assert convertToLower('INCALZIRE') == 'incalzire'
 
 
 def convertFromRoToEng(string):
@@ -54,19 +33,6 @@ def convertFromRoToEng(string):
     return 'invalid'
 
 
-def testConvertFromRoToEn():
-    '''
-    Function to test the function convertFromRoToEng
-    Takes no arguments
-    Doesn't return anythinh
-    '''
-    assert convertFromRoToEng('Apa') == 'water'
-    assert convertFromRoToEng('INCALZIRE') == 'heating'
-    assert convertFromRoToEng('AlTeLe') == 'others'
-    assert convertFromRoToEng('') == 'invalid'
-    assert convertFromRoToEng('CANALIZARE') == 'sewerage'
-
-
 def convertFromEnToRo(type):
     '''
     Function that convert the type from En to Ro
@@ -86,39 +52,16 @@ def convertFromEnToRo(type):
     return  type
 
 
-def readStr(text):
-    while True:
-        try:
-            string = str(input(text))
-            if string.isalpha() and convertFromRoToEng(string) != 'invalid':
-                return convertFromRoToEng(string)
-        except:
-            print("Valoare invalida, incercati din nou... ")
-
-
 def createNewList(n):
     '''
     Function to create a new empty list of apartments
     Takes one argument number of apartments
     Returns a bi-dimensional list, representing the attributes of an apartment
     '''
-    l = []
+    l = {}
     for i in range(n):
-        l.append([0, 0, 0, 0, 0, 0])
+        l[i] = {'water':0, 'gas':0, 'heating':0, 'sewerage':0, 'others':0, 'day':0}
     return l
-
-
-def testCreateNewList():
-
-    '''
-    Function to test the createNewList function
-    Takes no arguments
-    Doesn't return anything
-    '''
-    emptyList = [0, 0, 0, 0, 0, 0]
-    assert createNewList(2) == [emptyList, emptyList]
-    assert createNewList(0) == []
-    assert createNewList(4) == [emptyList, emptyList, emptyList, emptyList]
 
 
 def clearScreen():
@@ -138,7 +81,9 @@ def printMenu():
     print("Apasati 2 pentru optiunile de stergere ale unei cheltuieli")
     print("Apasati 3 pentru optiunile de cautare ale unei cheltuieli")
     print("Apasati 4 pentru a putea vizualiza rapoarte")
-    print("Apasati 5 pentru a inchide aplicatia")
+    print("Apasati 5 pentru optiunile de filtrare")
+    print("Apasati 6 pentru a face undo")
+    print("Apasati 7 pentru a inchide aplicatia")
     print("O cheltuiala poate fi doar de tipul: apa, incalzire, canalizare, gaz sau altele")
 
 
@@ -183,6 +128,14 @@ def printViewSubmenu():
     print("Apasati 1 pentru a tipari suma totala pentru un tip de cheltuiala")
     print("Apasati 2 pentru a tipari toate apartamentele sortate dupa un tip de cheltuiala")
     print("Apasati 3 pentru a topari totalul de cheltuieli pentru un apartament dat")
+
+def printFilterSubmenu():
+    '''
+    Functon to print the submenu for filter feature
+    :return: none
+    '''
+    print("Apasati 1 pentru a elimina toate cheltuielile de un anumit tip")
+    print("Apasati 2 pentru a elimina toate cheltuielile mai mici decat o suma data")
 
 def printCostLargerThanSum(listOfApartments, sum):
     '''
@@ -243,4 +196,7 @@ def printCommands():
     print("\nPentru a afisa suma totala pentru un anumit tip, tastati: tipareste <tipCost>")
     print("Pentru a printa toate apartamentele sortat in functie de un cost, tastati: lista sortata <tipCost>")
     print("Pentru a printa costul total de la un apartament, tipariti: tipareste <nrAp>")
+    print("\nPentru a filtra apartamentele dupa un anumit tip de cost, tipariti: filtrare <tipCost>")
+    print("Pentru a filtra apartamentele mai mici decat o suma, tipariti: filtrare <suma>" )
+    print("\nPentru a reveni la ultima comanda, tipariti undo")
     print("Pentru a inchide aplicatia tipariti: iesire")

@@ -1,5 +1,8 @@
-from utils.helper import createNewList, readInt, readStr, clearScreen, printCostLargerThanSum, printCostTypeFromAll, \
+from copy import deepcopy
+
+from utils.helper import clearScreen, printCostLargerThanSum, printCostTypeFromAll, \
     convertFromEnToRo, convertFromRoToEng, printCommands
+from utils.validation import readInt, readStr
 
 '''
 The apartments List will be defined as a bi-dimensional list with n rows and 6 columns
@@ -13,16 +16,17 @@ COLUMN 6: THE DATE IN WHICH THE COST WAS ADDED/DELETED/MODIFIED
 '''
 
 typeOfCosts = {
-    "water" : 0,
-    "gas" : 1,
-    "heating" : 2,
-    "sewerage" : 3,
-    "others" : 4
+    "water": 0,
+    "gas": 1,
+    "heating": 2,
+    "sewerage": 3,
+    "others": 4
 }
 
 date = {
-    "day" : 5
+    "day": 5
 }
+
 
 def printCost(listOfApartments, index):
     '''
@@ -30,9 +34,10 @@ def printCost(listOfApartments, index):
     '''
     print("Apartamentul ", index + 1)
     for key in typeOfCosts:
-        print(convertFromEnToRo(key), " ", listOfApartments[index][typeOfCosts[key]])
-    print("zi ", listOfApartments[index][date['day']])
-    print("\n"*3)
+        print(convertFromEnToRo(key), " ", listOfApartments[index][key])
+    print("zi ", listOfApartments[index]['day'])
+    print("\n" * 3)
+
 
 def getNumOfApartments(listOfApartments):
     '''
@@ -43,20 +48,7 @@ def getNumOfApartments(listOfApartments):
     return len(listOfApartments)
 
 
-def testGetNumOfApartments():
-    '''
-    Function to thest the getNumOfApartments function
-    Takes no parameters
-    Doesn't return anything
-    '''
-    testList = createNewList(21)
-    assert getNumOfApartments(testList) == 21
-    testList = createNewList(0)
-    assert getNumOfApartments(testList) == 0
-    testList = createNewList(125)
-    assert getNumOfApartments(testList) == 125
-
-#CREATING AND ADDING COSTS PART
+# CREATING AND ADDING COSTS PART
 
 def addToCost(listOfApartments, index, sum, type, day):
     '''
@@ -64,23 +56,8 @@ def addToCost(listOfApartments, index, sum, type, day):
     Takes 4 arguments: the list of apartments, the index of the apartment, the sum of the cost and it's type
     Doesn't return anything
     '''
-    listOfApartments[index][typeOfCosts[type]] += sum
-    listOfApartments[index ][date['day']] = day
-
-
-def testAddtoCost():
-    '''
-    Function to test the addToCost function
-    Takes no arguments
-    Doesen't return anything
-    '''
-    testList = createNewList(1)
-    addToCost(testList, 0, 124, 'water', 24)
-    assert testList == [[124, 0, 0, 0, 0, 24]]
-    addToCost(testList, 0, 120, 'water', 1)
-    assert testList == [[244, 0, 0, 0, 0, 1]]
-    addToCost(testList, 0, 90, 'heating', 19)
-    assert testList == [[244, 0, 90, 0, 0, 19]]
+    listOfApartments[index][type] += sum
+    listOfApartments[index]['day'] = day
 
 
 def modifyApartmentCost(listOfApartments, index, sum, type, day):
@@ -89,27 +66,11 @@ def modifyApartmentCost(listOfApartments, index, sum, type, day):
     Takes 4 arguments: the list of apartments, the index of apartment, the sum and its cost
     Doesn't return anything
     '''
-    listOfApartments[index][typeOfCosts[type]] = sum
-    listOfApartments[index][date['day']] = day
+    listOfApartments[index][type] = sum
+    listOfApartments[index]['day'] = day
 
 
-def testModifyApartmentCost():
-    '''
-    Function to test the modifyApartmentCost function
-    Takes no argument
-    Doesn't return anything
-    '''
-    emptyList = [0, 0, 0, 0, 0, 0]
-    testList = createNewList(2)
-    testList.append([0, 0, 125, 0, 0, 0])
-    testList.append([0, 0, 0, 0, 0, 0])
-    modifyApartmentCost(testList, 3, 20, 'water', 13)
-    assert testList == [emptyList, emptyList, [0, 0, 125, 0, 0, 0], [20, 0, 0, 0, 0, 13]]
-    modifyApartmentCost(testList, 2, 42, 'heating', 15)
-    assert testList == [emptyList, emptyList, [0, 0, 42, 0, 0, 15], [20, 0, 0, 0, 0, 13]]
-
-
-#DELETE PART
+# DELETE PART
 
 def deleteApartmentCost(listOfApartments, index, day):
     '''
@@ -117,22 +78,8 @@ def deleteApartmentCost(listOfApartments, index, day):
     Takes two arguments the list of apartments and the index
     Doesn't return anything
     '''
-    emptyList = [0, 0, 0, 0, 0, day]
-    listOfApartments[index] = emptyList
-
-
-def testDeleteApartmentCost():
-    '''
-    Function to test the deleteApartment function
-    Takes no arguments
-    Doesn't return anything
-    '''
-    emptyList = [0, 0, 0, 0, 0, 0]
-    testList = [emptyList, emptyList, [0, 0, 125, 0, 0, 0], [20, 0, 0, 0, 0, 0]]
-    deleteApartmentCost(testList, 2, 5)
-    assert testList == [emptyList, emptyList, [0, 0, 0, 0, 0, 5], [20, 0, 0, 0, 0, 0]]
-    deleteApartmentCost(testList, 3, 6)
-    assert testList == [emptyList, emptyList,  [0, 0, 0, 0, 0, 5], [0, 0, 0, 0, 0, 6]]
+    emptyDict = {'water': 0, 'gas': 0, 'heating': 0, 'sewerage': 0, 'others': 0, 'day': day}
+    listOfApartments[index] = emptyDict
 
 
 def deleteFromAtoB(listOfApartments, A, B):
@@ -142,26 +89,9 @@ def deleteFromAtoB(listOfApartments, A, B):
     Doesn't return anything
     '''
 
-    emptyList = [0, 0, 0, 0, 0, 0]
+    emptyDict = {'water': 0, 'gas': 0, 'heating': 0, 'sewerage': 0, 'others': 0, 'day': 0}
     for i in range(A, B):
-        listOfApartments[i] = emptyList
-
-
-def testDeleteFromAtoB():
-    '''
-    Function to test the function deleteFromAtoB
-    Takes no arguments
-    Doesn't return anyhting
-    '''
-    emptyList = [0, 0, 0, 0, 0, 0]
-    testList = createNewList(4)
-    deleteFromAtoB(testList, 2, 4)
-    assert testList == [emptyList]*4
-    modifyApartmentCost(testList, 2, 123, 'water', 1)
-    modifyApartmentCost(testList, 3, 123, 'gas', 2)
-    modifyApartmentCost(testList, 0, 123, 'heating', 3)
-    deleteFromAtoB(testList, 2, 3)
-    assert testList == [[0, 0, 123, 0, 0, 3], emptyList, emptyList, [123, 123, 0, 0, 0, 2]]
+        listOfApartments[i] = emptyDict
 
 
 def deleteCostFromAll(listofApartments, type, day):
@@ -171,29 +101,11 @@ def deleteCostFromAll(listofApartments, type, day):
     Doesen't return anything
     '''
     for i in range(0, len(listofApartments)):
-        listofApartments[i][typeOfCosts[type]] = 0
-        listofApartments[i][date['day']] = day
+        listofApartments[i][type] = 0
+        listofApartments[i]['day'] = day
 
 
-def testDeleteCostFromAll():
-    '''
-    Function to test the function deleteCostFromAll
-    Takes no arguments
-    Doesen't return anything
-    '''
-    tmpList = [0, 0, 0, 0, 0, 5]
-    testList = createNewList(4)
-    deleteCostFromAll(testList, 'gas', 5)
-    assert testList == [tmpList] * 4
-    modifyApartmentCost(testList, 2, 123, 'water', 1)
-    modifyApartmentCost(testList, 3, 123, 'gas', 2)
-    modifyApartmentCost(testList, 0, 123, 'water', 3)
-    deleteCostFromAll(testList, 'water', 7)
-    tmpList[5] = 7
-    assert testList == [tmpList, tmpList, tmpList, [0, 123, 0, 0, 0, 7]]
-
-
-#SEARCHING PART
+# SEARCHING PART
 
 def getTotalCost(listofApartments, index):
     '''
@@ -203,23 +115,8 @@ def getTotalCost(listofApartments, index):
     '''
     totalCost = 0
     for i in typeOfCosts:
-        totalCost += listofApartments[index][typeOfCosts[i]]
-    return  totalCost
-
-
-def testGetTotalCost():
-    '''
-    Function that test the function getTotalCost
-    Takes no arguments
-    Doesn't return anything
-    '''
-    testList = createNewList(4)
-    assert getTotalCost(testList, 2) == 0
-    modifyApartmentCost(testList, 2, 123, 'water', 1)
-    modifyApartmentCost(testList, 3, 123, 'gas', 2)
-    modifyApartmentCost(testList, 2, 120, 'others', 3)
-    modifyApartmentCost(testList, 0, 123, 'heating', 4)
-    assert getTotalCost(testList, 2) == 243
+        totalCost += listofApartments[index][i]
+    return totalCost
 
 
 def costsLargerThanSum(listOfApartments, sum):
@@ -235,21 +132,6 @@ def costsLargerThanSum(listOfApartments, sum):
     return newApartments
 
 
-def testCostsLargerThanSum():
-    '''
-    Function to test the function costsLargerThanSum
-    Takes no arguments
-    Doesn't return anything
-    '''
-    testList = createNewList(4)
-    assert costsLargerThanSum(testList, 0) == []
-    modifyApartmentCost(testList, 2, 123, 'water', 1)
-    modifyApartmentCost(testList, 3, 123, 'gas', 2)
-    modifyApartmentCost(testList, 2, 120, 'others', 3)
-    modifyApartmentCost(testList, 0, 123, 'heating', 4)
-    assert costsLargerThanSum(testList, 119) == [0, 2, 3]
-
-
 def costTypeFromAll(listOfApartments, type):
     '''
     Function that returns a type of cost from all apartments
@@ -258,23 +140,8 @@ def costTypeFromAll(listOfApartments, type):
     '''
     newApartments = []
     for i in range(len(listOfApartments)):
-        newApartments.append(listOfApartments[i][typeOfCosts[type]])
+        newApartments.append(listOfApartments[i][type])
     return newApartments
-
-
-def testCostTypeFromAll():
-    '''
-    Function to test the function costTypeFromAll
-    Takes no arguments
-    Doesn't return anything
-    '''
-    testList = createNewList(4)
-    assert costTypeFromAll(testList, 'water') == [0, 0, 0, 0]
-    modifyApartmentCost(testList, 2, 123, 'water', 1)
-    modifyApartmentCost(testList, 3, 123, 'water', 2)
-    modifyApartmentCost(testList, 1, 120, 'water', 3)
-    modifyApartmentCost(testList, 0, 123, 'heating', 4)
-    assert costTypeFromAll(testList, 'water') == [0, 120, 123, 123]
 
 
 def costBeforDay(listOfApartments, day, sum):
@@ -284,10 +151,11 @@ def costBeforDay(listOfApartments, day, sum):
     Returns the costs made before the day and larger than sum
     '''
     for cost in range(0, len(listOfApartments)):
-        if listOfApartments[cost][date['day']] and getTotalCost(listOfApartments, cost) > sum:
+        if listOfApartments[cost]['day'] and getTotalCost(listOfApartments, cost) > sum:
             printCost(listOfApartments, cost)
 
-#VIEW PART
+
+# VIEW PART
 def totalSumForCost(listOfApartments, type):
     '''
     Function that calculates the total sum of some cost
@@ -295,19 +163,10 @@ def totalSumForCost(listOfApartments, type):
     Returns a list with 2 elements, the sum and the type of cost
     '''
     totalCost = 0
-    for cost in listOfApartments:
-        totalCost += cost[typeOfCosts[type]]
-    return [type, totalCost]
+    for i in range(len(listOfApartments)):
+        totalCost += listOfApartments[i][type]
 
-def testTotalSumForCost():
-    testList = createNewList(4)
-    assert totalSumForCost(testList, 'water') == ['water', 0]
-    modifyApartmentCost(testList, 2, 123, 'water', 1)
-    modifyApartmentCost(testList, 3, 123, 'gas', 2)
-    modifyApartmentCost(testList, 2, 120, 'water', 3)
-    modifyApartmentCost(testList, 0, 123, 'gas', 4)
-    assert totalSumForCost(testList, 'water') == ['water', 120]
-    assert totalSumForCost(testList, 'gas') == ['gas', 246]
+    return [type, totalCost]
 
 
 def sortAfterType(listOfApartments, type):
@@ -317,36 +176,32 @@ def sortAfterType(listOfApartments, type):
     :param type: type of cost
     :return: listOfApartments sorted by index
     '''
-    sortedList = sorted(range(len(listOfApartments)), key=lambda k : listOfApartments[k][typeOfCosts[type]])
+    sortedList = sorted(range(len(listOfApartments)), key=lambda k: listOfApartments[k][type])
     return sortedList
 
-def testSortAfterType():
-    testList = createNewList(4)
-    #print(sortAfterType(testList, 'water'))
-    assert sortAfterType(testList, 'water') == [0, 1, 2, 3]
-    modifyApartmentCost(testList, 3, 119, 'water', 1)
-    modifyApartmentCost(testList, 2, 156, 'water', 2)
-    modifyApartmentCost(testList, 1, 120, 'water', 3)
-    modifyApartmentCost(testList, 0, 200, 'water', 4)
-    #print(sortAfterType(testList, 'water'))
-    assert sortAfterType(testList, 'water') == [3, 1, 2, 0]
 
 def printSortedAfterType(listOfApartments, type):
     listToPrint = sortAfterType(listOfApartments, type)
     for apartment in listToPrint:
         printCost(listOfApartments, apartment)
 
-#COMMANDS CONTROL
 
-def addCostControl(listOfApartments):
+# COMMANDS CONTROL
+
+def makeBackUp(listOfAapartments, backUpList):
+    backUpList[str(len(backUpList))] = (deepcopy(listOfAapartments))
+
+
+def addCostControl(listOfApartments, backUpList):
     '''
     Function that controls the subcommand1 (adding a new cost to an apartment)
     Takes no arguments
     Doesn't return anything
     '''
+    makeBackUp(listOfApartments, backUpList)
     print("\n")
     subCommand = readInt("Selectati comanda dorita: ")
-    print("\n"*2)
+    print("\n" * 2)
     if subCommand == 1:
         try:
             index = readInt("Dati numarul apartamentului: ")
@@ -369,15 +224,16 @@ def addCostControl(listOfApartments):
             print("\nIndexul este prea mare sau negativ!!\n")
 
 
-def deleteCostControl(listOfApartments):
+def deleteCostControl(listOfApartments, backUpList):
     '''
     Function that controls the subcommand2 (deleting cost of an apartment)
     Takes no arguments
     Doesn't return anything
     '''
-    print("\n"*2)
+    makeBackUp(listOfApartments, backUpList)
+    print("\n" * 2)
     subCommand = readInt("Selectati comanda dorita :")
-    print("\n"*2)
+    print("\n" * 2)
     if subCommand == 1:
         try:
             index = readInt("Dati numarul apartamentului: ")
@@ -391,7 +247,7 @@ def deleteCostControl(listOfApartments):
             startIndex = readInt("Dati primul apartamentul de la care se incepe stergerea: ")
             endIndex = readInt("Dati ultimul apartament la care se face stergere")
             if startIndex > endIndex:
-                startIndex,endIndex = endIndex,startIndex
+                startIndex, endIndex = endIndex, startIndex
             deleteFromAtoB(listOfApartments, startIndex - 1, endIndex)
             clearScreen()
         except IndexError:
@@ -411,12 +267,12 @@ def searchingCostControl(listOfApartments):
     '''
     print("\n")
     subCommand = readInt("Selectati comanda dorita :")
-    print("\n"*2)
+    print("\n" * 2)
     if subCommand == 1:
         sum = readInt("Dati suma de comparare: ")
-        print("\n"*2)
+        print("\n" * 2)
         printCostLargerThanSum(costsLargerThanSum(listOfApartments, sum), sum)
-        print("\n"*2)
+        print("\n" * 2)
     elif subCommand == 2:
         type = readStr("Dati tipul de cheltuiala ce se vrea afisat de la toate apartamentele: ")
         printCostTypeFromAll(costTypeFromAll(listOfApartments, type), type)
@@ -424,6 +280,7 @@ def searchingCostControl(listOfApartments):
         day = readInt("Dati ziua: ")
         sum = readInt("Dati suma de comparare: ")
         costBeforDay(listOfApartments, day, sum)
+
 
 def viewCostControl(listOfApartments):
     '''
@@ -447,24 +304,86 @@ def viewCostControl(listOfApartments):
     elif subCommand == 3:
         try:
             index = readInt("Dati numarul apartamentului pentru tiparirea costului: ")
-            print("Costul total pentru apartamentul ", index,  " este ", getTotalCost(listOfApartments, index - 1))
+            print("Costul total pentru apartamentul ", index, " este ", getTotalCost(listOfApartments, index - 1))
         except IndexError:
             print("Indxul este prea mare sau prea mic!!")
 
 
-#COMMAND BASED CONTROLS
+def filterAp(listOfApartments, type):
+    '''
+    Function that filters the apartments with some type
+    :param listOfApartments:
+    :param type:
+    :return:
+    '''
+    for index in range(len(listOfApartments)):
+        print("Apartamentul ", index + 1)
+        for key in typeOfCosts:
+            if key != type:
+                print(convertFromEnToRo(key), " ", listOfApartments[index][key])
+        print("zi ", listOfApartments[index]['day'])
+        print("\n" * 3)
 
-#adauga nrApartament sumaCost tipCost ziua
-def addCommandController(listOfApartments, command):
+
+def filterApSum(listOfApartments, sum):
+    '''
+    Function that filters the costs < sum
+    :param listOfApartments:
+    :param sum:
+    :return:
+    '''
+    for index in range(len(listOfApartments)):
+        print("Apartamentul ", index + 1)
+        for key in typeOfCosts:
+            if listOfApartments[index][key] >= sum:
+                print(convertFromEnToRo(key), " ", listOfApartments[index][key])
+        print("zi ", listOfApartments[index]['day'])
+        print("\n" * 3)
+
+
+def filterCostControl(listOfApartments):
+    '''
+    Function that controls the filter feature of the application
+    :param listOfApartments:
+    :return: none
+    '''
+    print('\n')
+    subCommand = readInt("Selectati comanda dorita: ")
+    print("\n" * 2)
+
+    if subCommand == 1:
+        type = readStr("Dati tipul dorit: ")
+        filterAp(listOfApartments, type)
+    elif subCommand == 2:
+        sum = readInt("Dati suma dorita: ")
+        filterApSum(listOfApartments, sum)
+
+
+def undo(listOfApartments, backUpList):
+    '''
+    Function for the undo functionality
+    :param lisfOfApartments:
+    :return:
+    '''
+    try:
+        return backUpList.pop(str(len(backUpList) - 1))
+    except KeyError:
+        print("Nu se mai poate face undo!")
+
+
+# COMMAND BASED CONTROLS
+
+# adauga nrApartament sumaCost tipCost ziua
+def addCommandController(listOfApartments, command, newBackUpList):
     '''
     Function that controls adding cost part
     :param listOfApartments:
     :param command:
     :return:
     '''
+    makeBackUp(listOfApartments, newBackUpList)
     try:
-        if len(command) != 4: raise ValueError("Indexul trebuie sa fie un numar intreg pozitib!!!")
-        #TODO add description
+        if len(command) != 4: raise ValueError("Indexul trebuie sa fie un numar intreg pozitiv!!!")
         index = int(command[0])
         sumCost = int(command[1])
         costType = convertFromRoToEng(command[2])
@@ -480,23 +399,14 @@ def addCommandController(listOfApartments, command):
         print(ex)
 
 
-def testAddCommandController():
-    emptyList = [0, 0, 0, 0, 0, 0]
-    testList = createNewList(4)
-    addCommandController(testList, ['3', '120', 'apa', '15'])
-    assert testList == [emptyList, emptyList, [120, 0, 0, 0, 0, 15], emptyList]
-    addCommandController(testList, ['2', '99', 'incalzire', '22'])
-    assert testList == [emptyList, [0, 0, 99, 0, 0, 22], [120, 0, 0, 0, 0, 15], emptyList]
-    addCommandController(testList, ['3', '120', 'apa', '16'])
-    assert testList == [emptyList, [0, 0, 99, 0, 0, 22], [240, 0, 0, 0, 0, 16], emptyList]
-
-def deleteCommandController(listOfApartments, command):
+def deleteCommandController(listOfApartments, command, newBackUpList):
     '''
     Function that controls the delete part of the aplication
     :param listOfApartments:
     :param command:
     :return:
     '''
+    makeBackUp(listOfApartments, newBackUpList)
     if len(command) > 1 and command[1] == ',':
         try:
             if len(command) != 3:
@@ -504,14 +414,14 @@ def deleteCommandController(listOfApartments, command):
             startIndex = int(command[0])
             endIndex = int(command[2])
             if startIndex > endIndex:
-                startIndex,endIndex = endIndex,startIndex
+                startIndex, endIndex = endIndex, startIndex
             deleteFromAtoB(listOfApartments, startIndex - 1, endIndex)
         except IndexError:
             print("startIndex si stopIndex trebuie sa fie numere intregi pozitive!!")
         except ValueError:
             print("startIndex si stopIndex trebuie sa fie numere intregi pozitive!!")
 
-    elif len(command) > 1 and  command[0] == 'de' and command[1] == 'la':
+    elif len(command) > 1 and command[0] == 'de' and command[1] == 'la':
         try:
             if len(command) != 4:
                 raise ValueError("Comanda trebuie sa fie Valida!")
@@ -522,28 +432,17 @@ def deleteCommandController(listOfApartments, command):
             print("Indexul trebuie sa fie un numar intreg pozitiv")
         except IndexError:
             print("Indexul este prea mare sau negativ!")
-    elif len(command) != 0 and  convertFromRoToEng(command[0]) in typeOfCosts:
+    elif len(command) != 0 and convertFromRoToEng(command[0]) in typeOfCosts:
         try:
             if not convertFromRoToEng(command[0]) in typeOfCosts:
                 raise KeyError("Tip de cost invalid")
             type = convertFromRoToEng(command[0])
             day = int(command[1])
-            deleteCostFromAll(listOfApartments,type, day)
+            deleteCostFromAll(listOfApartments, type, day)
         except KeyError as msg:
             print(msg)
     else:
         print("Comanda invalida!!!")
-
-
-def testDeleteCommandController():
-    emptyList = [0, 0, 0, 0, 0, 0]
-    testList = createNewList(4)
-    addCommandController(testList, ['3', '120', 'apa', '15'])
-    assert testList == [emptyList, emptyList, [120, 0, 0, 0, 0, 15], emptyList]
-    deleteCommandController(testList, ['1', ',', '3'])
-    assert testList == [emptyList, emptyList, emptyList, emptyList]
-    addCommandController(testList, ['3', '120', 'apa', '16'])
-
 
 
 def modifyCommandController(listOfApartments, command):
@@ -569,15 +468,6 @@ def modifyCommandController(listOfApartments, command):
         print("Indexul trebuie sa fie numar intreg pozitiv")
     except KeyError as ex:
         print(ex)
-
-
-def testModifyCommandController():
-    emptyList = [0, 0, 0, 0, 0, 0]
-    testList = createNewList(4)
-    modifyCommandController(testList, ['3', '120', 'apa', '15'])
-    assert testList == [emptyList, emptyList, [120, 0, 0, 0, 0, 15], emptyList]
-    modifyCommandController(testList, ['2', '99', 'incalzire', '22'])
-    assert testList == [emptyList, [0, 0, 99, 0, 0, 22], [120, 0, 0, 0, 0, 15], emptyList]
 
 
 def printsCommandController(listOfApartments, command):
@@ -619,6 +509,7 @@ def printsCommandController(listOfApartments, command):
             print(msg)
     else:
         print("Comanda invalida!!!")
+
 
 def listCommandController(listOfApartments, command):
     '''
@@ -663,6 +554,17 @@ def viewCommandController(listOfApartments, command):
         print("Comanda invalida!!!")
 
 
+def filterCommandController(listOfApartments, command):
+    '''
+    Function that controls the command based fileter part
+    :return: none
+    '''
+    if len(command) == 1 and convertFromRoToEng(command[0]) in typeOfCosts:
+        filterAp(listOfApartments, convertFromRoToEng(command[0]))
+    elif len(command) == 1 and int(command[0]):
+        filterApSum(listOfApartments, int(command[0]))
+
+
 def readCommand():
     '''
     Reads Command
@@ -684,39 +586,17 @@ def parseCommand(command):
         return command, []
 
     cmds = command[: pos]
-    args = command[pos + 1: ].split()
+    args = command[pos + 1:].split()
 
     return cmds, args
 
 
-def testParseCommand():
-    assert parseCommand("sterge de la 1 la 10") == ('sterge', ['de', 'la', '1', 'la', '10'])
-    assert parseCommand("adauga 10 100 apa 15") == ('adauga', ['10', '100', 'apa', '15'])
-
-
-def commandController(listOfApartments, command):
+def undoCommandController(listOfApartments, command, newBackUpList):
     '''
-
-    :param command:
+    controls the command based undo
+    :param listOfApartments:
+    :param param:
     :return:
     '''
-
-    command = parseCommand(command)
-    if command[0] == 'help':
-        printCommands()
-    elif command[0] == 'adauga':
-        addCommandController(listOfApartments, command[1])
-    elif command[0] == 'sterge':
-        deleteCommandController(listOfApartments, command[1])
-    elif command[0] == 'modifica':
-        modifyCommandController(listOfApartments, command[1])
-    elif command[0] == 'afiseaza':
-        printsCommandController(listOfApartments, command[1])
-    elif command[0] == 'lista':
-        listCommandController(listOfApartments, command[1])
-    elif command[0] == 'tipareste':
-        viewCommandController(listOfApartments, command[1])
-    elif command[0] == 'iesire':
-        exit()
-    else:
-        raise ValueError("Comanda introdusa gresit, tastati help pentru a vedea comenzile posibile!!!")
+    if len(command) == 0:
+       listOfApartments =  undo(listOfApartments, newBackUpList)
