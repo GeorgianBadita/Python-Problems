@@ -3,14 +3,13 @@ from domain.validators import ValidatorException
 
 
 class EventService:
-    def __init__(self, repo, val):
+    def __init__(self, repo):
         '''
         Initialise service
         :param repo: -repository - object to store events
         :param val: - validator - object to validate events
         '''
         self.__rep = repo
-        self.__val = val
 
     def createEvent(self, idEvent, date, time, descr):
         '''
@@ -26,11 +25,8 @@ class EventService:
         '''
         #create event object
         event = Event(idEvent, date, time, descr)
-        #validate event using validator object
-        self.__val.validate(event)
         #store event into using repository
         self.__rep.store(event)
-
         return event
 
     def getAllEvents(self):
@@ -41,11 +37,7 @@ class EventService:
         return self.__rep.getAll()
 
     def searchEvent(self, idEvent):
-        allEvents = self.getAllEvents()
-        for event in allEvents:
-            if idEvent == event.getId():
-                return event
-        return None
+        return self.__rep.findElem(idEvent)
 
     def deleteEvent(self, idevent):
         allEvents = self.getAllEvents()
@@ -64,8 +56,17 @@ class EventService:
         '''
         try:
             newEvent = Event(idEvent, date, time, descr)
-            self.__val.validate(newEvent)
             self.__rep.updateElem(newEvent)
             return newEvent
         except ValidatorException as ex:
             print(ex.args)
+
+    def enrollPersToEvent(self, person, event):
+        '''
+        Function that enrolls person to event
+        :param idPers:
+        :param idEvent:
+        :return:
+        '''
+        event.setPersEnrolled(person)
+        self.__rep.enroll(event)

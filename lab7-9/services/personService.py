@@ -4,14 +4,13 @@ from domain.validators import ValidatorException
 
 class PersonService:
 
-    def __init__(self, rep, val):
+    def __init__(self, rep):
         '''
         Initializse service
         :param rep: repository - object to store people
         :param val: validator - object to validate people
         '''
         self.__rep = rep
-        self.__val = val
 
     def createPerson(self, idPers, name, addr):
         '''
@@ -26,8 +25,6 @@ class PersonService:
         '''
         #create a person object
         person = Person(idPers, name, addr)
-        #validate person using validator object
-        self.__val.validate(person)
         #store person into using repository
         self.__rep.store(person)
         return person
@@ -46,11 +43,7 @@ class PersonService:
         :param idPerson:
         :return: the person
         '''
-        allPeople = self.getAllPeople()
-        for person in allPeople:
-            if idPerson == person.getId():
-                return person
-        return None
+        return self.__rep.findElem(idPerson)
 
     def deletePerson(self, idPerson):
         '''
@@ -74,8 +67,25 @@ class PersonService:
         '''
         try:
             newPerson = Person(idPers, name, address)
-            self.__val.validate(newPerson)
             self.__rep.updateElem(newPerson)
             return newPerson
         except ValidatorException as ex:
             print(ex.args)
+
+    def printEnrolled(self, person, serviceEvents):
+        '''
+        Prints the events of a person
+        :param person:
+        :param serviceEvents:
+        :return:
+        '''
+        enrolledIn = []
+        events = serviceEvents.getAllEvents()
+        for event in events:
+            if person in event.getPersEnrolled():
+               enrolledIn.append(event)
+        if not len(enrolledIn):
+            return None
+        return enrolledIn
+
+

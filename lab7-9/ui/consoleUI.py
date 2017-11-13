@@ -2,7 +2,6 @@ from domain.validators import ValidatorException
 from repository.memoryRepo import RepositoryException
 
 
-
 class Console:
     '''
     Class for the console program
@@ -11,13 +10,13 @@ class Console:
         self.__servicePeople = servicePeople
         self.__serviceEvents = serviceEvents
 
-    def __showAllPerople(self):
+    def __showAllPeople(self):
         '''
         View (print) all people from the catalog
         :return:
         '''
         people = self.__servicePeople.getAllPeople()
-        if len(people) == 0:
+        if not len(people):
             print("No people in the list")
         else:
             print("Id   Name      Address")
@@ -53,6 +52,45 @@ class Console:
         except TypeError as ex:
             print(ex)
 
+    def __printEnrolledPerson(self, idPers):
+        '''
+        Function to print the events of a person
+        :param idPers:
+        :return:
+        '''
+        try:
+            person = self.__servicePeople.searchPerson(idPers)
+            if person is None:
+                raise ValueError("There is no person with ID", idPers)
+            else:
+                enrolledIn = self.__servicePeople.printEnrolled(person, self.__serviceEvents)
+                if enrolledIn == None: raise ValueError("Person is not enrolled in any event")
+                else:
+                    print("Person ", person.getName(), "is enrolled in: ")
+                    for event in enrolledIn:
+                        print(event.getId(), event.getDate(), event.getTime(), event.getDescr())
+        except ValueError as ex:
+            print(ex)
+
+
+    def __enrollPerson(self, idPers, idEvent):
+        '''
+        Function to enroll a person to an event
+        :param idPerson:
+        :param idEvent:
+        :return:
+        '''
+        try:
+            person = self.__servicePeople.searchPerson(idPers)
+            event = self.__serviceEvents.searchEvent(idEvent)
+            if person is None or event is None:
+                raise ValueError("Event or person doesn't exist")
+            else:
+                self.__serviceEvents.enrollPersToEvent(person, event)
+                print(person.getId(), person.getName(), "has been enrolled to event ", idEvent)
+
+        except ValueError as ex:
+            print(ex.args)
 
     def __deletePerson(self):
         '''
@@ -61,10 +99,10 @@ class Console:
         '''
         idPers = input("Give person ID: ")
         person = self.__servicePeople.deletePerson(idPers)
-        if person == None:
+        if person is None:
             print("There are no people with the ID ", idPers)
         else:
-           print(person.getName(), " was deleted")
+            print(person.getName(), " was deleted")
 
 
     def __modifyPerson(self):
@@ -85,7 +123,7 @@ class Console:
 
     def printPerson(self, idPers, person):
 
-        if person == None: raise TypeError("The persin with ID "+ idPers + ' does not exist')
+        if person is None: raise TypeError("The persin with ID "+ idPers + ' does not exist')
         else:
             print("Id   Name      Address")
             print(person.getId(), person.getName(), person.getAddress())
@@ -136,7 +174,7 @@ class Console:
 
     def printEvent(self, idEvent, event):
 
-        if event == None: raise TypeError("There is np such event with ID " + idEvent)
+        if event is None: raise TypeError("There is np such event with ID " + idEvent)
         else:
             print("Id   Name    Date    Time    Description")
             print(event.getId(), event.getDate(), event.getTime(), event.getDescr())
@@ -149,7 +187,7 @@ class Console:
         '''
         idEvent = input("Give event ID: ")
         event = self.__serviceEvents.deleteEvent(idEvent)
-        if event == None:
+        if event is None:
             print("There are no events with the ID ", idEvent)
         else:
             print("Id   Date    Time      Description")
@@ -178,8 +216,9 @@ class Console:
     def showUI(self):
         self.addEvents()
         self.addPeople()
+        self.enrollPeople()
         while True:
-            cmd = input("Give command (Add, View, Search, Delete, Modify): ")
+            cmd = input("Give command (Add, View, Search, Delete, Modify, Enroll, Print Enrolled, Exit): ")
             if cmd.lower() == "add":
                 self.__addCmd()
             if cmd.lower() == "view":
@@ -190,18 +229,47 @@ class Console:
                 self.__modifyCmd()
             if cmd.lower() == 'delete':
                 self.__deleteCmd()
+            if cmd.lower() == 'enroll':
+                self.__enroll()
+            if cmd.lower() == 'print enrolled':
+                self.__printEnrolled()
+            if cmd.lower() == 'exit':
+                exit()
+            else:
+                print("The command is incorrec! Please try again")
+
+    def __printEnrolled(self):
+        '''
+        function to control print Enrolled functionality
+        :return:
+        '''
+        personId = input("Give person ID: ")
+        self.__printEnrolledPerson(personId)
+
+    def __enroll(self):
+        '''
+        Function to enroll person to an event
+        :return:
+        '''
+        personID = input("Give person ID: ")
+        eventID = input("Give eventID: ")
+        self.__enrollPerson(personID, eventID)
 
     def __searchCmd(self):
-        newcmd = input("Give command (Person, Event): ")
-        if newcmd.lower() == 'person':
+        '''
+        Function to controll the search UI
+        :return:
+        '''
+        newCmd = input("Give command (Person, Event): ")
+        if newCmd.lower() == 'person':
             self.__searchPerson()
-        if newcmd.lower() == 'event':
+        if newCmd.lower() == 'event':
             self.__searchEvent()
 
     def __viewCmd(self):
         newcmd = input("Give command (People, Events): ")
         if newcmd.lower() == "people":
-            self.__showAllPerople()
+            self.__showAllPeople()
         elif newcmd.lower() == "events":
             self.__showAllEvents()
 
@@ -218,7 +286,12 @@ class Console:
             self.__modifyPerson()
         elif newCmd.lower() == "event":
             self.__modifyEvent()
+
     def __deleteCmd(self):
+        '''
+        function for Delete comand
+        :return:
+        '''
         newCmd = input("Give command (Person, Event): ")
         if newCmd.lower() == 'person':
             self.__deletePerson()
@@ -228,7 +301,20 @@ class Console:
     def addPeople(self):
         self.__servicePeople.createPerson('1', 'Geo', 'Olanu')
         self.__servicePeople.createPerson('2', 'Gabi', 'Baia Mare')
+        self.__servicePeople.createPerson('3', 'Alexandru', 'Constanta')
+        self.__servicePeople.createPerson('4', 'Cristina', 'Valcea')
+        self.__servicePeople.createPerson('5', 'Alex TJ', 'Glasgow')
 
     def addEvents(self):
         self.__serviceEvents.createEvent('1', '20/12/2012', '15:45', 'Wedding')
         self.__serviceEvents.createEvent('2', '12/11/2019', '12:40', 'Funeral')
+        self.__serviceEvents.createEvent('3', '15/09/2020', '15:59', 'Birthday Party')
+        self.__serviceEvents.createEvent('4', '12/10/2015', '14:30', 'Christmas Party')
+
+    def enrollPeople(self):
+        self.__enrollPerson('1', '2')
+        self.__enrollPerson('1', '1')
+        self.__enrollPerson('5', '4')
+        self.__enrollPerson('4', '3')
+        self.__enrollPerson('1', '4')
+

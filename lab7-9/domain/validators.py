@@ -1,4 +1,3 @@
-from domain.entities import Person, Event
 from utils.helper import dateValidation, hourValidation
 
 
@@ -14,8 +13,8 @@ class PersonValidator:
     '''
     Class to validate person data
     '''
-
-    def validate(self, person):
+    @staticmethod
+    def validate(person):
         '''
         Throws ValidatorException if fields are empty
         :param person:
@@ -36,8 +35,8 @@ class EventValidator:
     Class to validate event data
     '''
 
-
-    def validate(self, event):
+    @staticmethod
+    def validate(event):
         '''
         Throws ValidationException if fields are invalid
         :param event:

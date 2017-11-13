@@ -36,6 +36,7 @@ class Event:
         self.__date = date
         self.__time = time
         self.__descr = descr
+        self.__persEnrolled = []
 
     def getId(self):
         return self.__id
@@ -46,8 +47,14 @@ class Event:
     def getTime(self):
         return self.__time
 
+    def getPersEnrolled(self):
+        return self.__persEnrolled
+
     def getDescr(self):
         return self.__descr
+
+    def setPersEnrolled(self, person):
+        self.__persEnrolled.append(person)
 
     def setId(self, newId):
         self.__id = newId

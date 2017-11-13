@@ -75,7 +75,7 @@ def testEventValidator():
 
 def testStorePeople():
     person = Person("1", "Ion", "Arad")
-    rep = MemoryRepository()
+    rep = MemoryRepository(PersonValidator)
     assert rep.size() == 0
     rep.store(person)
     assert rep.size() == 1
@@ -92,7 +92,7 @@ def testStorePeople():
 
 def testStoreEvents():
     event = Event("1", "20/07/2015", "12:30", "Wedding")
-    rep = MemoryRepository()
+    rep = MemoryRepository(EventValidator)
     rep.store(event)
     assert rep.size() == 1
     event1 = Event("2", "15/06/2018", "08:30", "Funeral")
@@ -106,9 +106,9 @@ def testStoreEvents():
         pass
 
 def testCreatePersonSrv():
-    rep = MemoryRepository()
+    rep = MemoryRepository(PersonValidator)
     val = PersonValidator()
-    perSrv = PersonService(rep, val)
+    perSrv = PersonService(rep)
     person = perSrv.createPerson("1", "Adi", "Calimanesti")
     assert person.getId() == "1"
     assert person.getName() == "Adi"
@@ -123,9 +123,9 @@ def testCreatePersonSrv():
         assert True
 
 def testCreateEventSrv():
-    rep = MemoryRepository()
+    rep = MemoryRepository(EventValidator)
     val = EventValidator()
-    eventSrv = EventService(rep, val)
+    eventSrv = EventService(rep)
     event = eventSrv.createEvent("1", "20/07/2012", "13:20", "Wedding")
     assert event.getId() == "1"
     assert event.getDate() == "20/07/2012"

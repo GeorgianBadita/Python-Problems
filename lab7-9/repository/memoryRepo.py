@@ -1,4 +1,3 @@
-from domain.entities import *
 
 class RepositoryException(Exception):
     pass
@@ -8,8 +7,9 @@ class MemoryRepository:
     Class for the memory repository
     '''
 
-    def __init__(self):
+    def __init__(self, entityValidator):
         self.__list = {}
+        self.__val = entityValidator
 
     def store(self, elem):
         '''
@@ -21,6 +21,7 @@ class MemoryRepository:
         '''
         if elem.getId() in self.__list:
             raise RepositoryException()
+        self.__val.validate(elem)
         self.__list[elem.getId()] = elem
 
     def deleteElem(self, elem):
@@ -45,9 +46,31 @@ class MemoryRepository:
         '''
         return  list(self.__list.values())
 
+    def findElem(self, entityID):
+        '''
+        Finds an entity and returns it
+        :param entity:
+        :return: None if the entity doesn't exist
+        '''
+        if entityID in self.__list:
+            return self.__list[entityID]
+        return None
+
+
     def updateElem(self, newElem):
         '''
         modify an element if it exists
         :return:
         '''
+        self.__val.validate(newElem)
         self.__list[newElem.getId()] = newElem
+
+    def enroll(self, newElem):
+        '''
+        Enrolls a person to an Event
+        :param entity:
+        :param idElem:
+        :return:
+        '''
+        self.__list[newElem.getId()] = newElem
+

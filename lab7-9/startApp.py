@@ -6,16 +6,16 @@ from ui.consoleUI import Console
 from utils.tests import testCreateEventSrv, testCreatePersonSrv,\
     testStoreEvents, testStorePeople, testEventValidator, testPersonValidator, testCreatePerson, testCreateEvent
 
-repPers = MemoryRepository()
-repEvent = MemoryRepository()
+
 
 valPers = PersonValidator()
 valEvent = EventValidator()
-ctrPers = PersonService(repPers, valPers)
-ctrEvent = EventService(repEvent, valEvent)
+
+repPers = MemoryRepository(valPers)
+repEvent = MemoryRepository(valEvent)
+
+ctrPers = PersonService(repPers)
+ctrEvent = EventService(repEvent)
 ui = Console(ctrPers, ctrEvent)
 
 ui.showUI()
-'''
-Questions about repository and CONSOLE UI
-'''
