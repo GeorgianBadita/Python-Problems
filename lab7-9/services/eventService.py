@@ -61,6 +61,7 @@ class EventService:
         except ValidatorException as ex:
             print(ex.args)
 
+    #TODO move all to repo
     def enrollPersToEvent(self, person, event):
         '''
         Function that enrolls person to event
@@ -70,3 +71,18 @@ class EventService:
         '''
         event.setPersEnrolled(person)
         self.__rep.enroll(event)
+
+    def retEventAtDate(self, date):
+        '''
+        gives the events in a date
+        :param date:
+        :return: the events at a date
+        '''
+        allEvents = self.getAllEvents()
+        eventsInDate = []
+        for event in allEvents:
+            if event.getDate() == date:
+                eventsInDate.append(event)
+        if not len(eventsInDate):
+            return None
+        return eventsInDate

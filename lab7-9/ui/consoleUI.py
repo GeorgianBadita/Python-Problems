@@ -1,5 +1,6 @@
 from domain.validators import ValidatorException
 from repository.memoryRepo import RepositoryException
+from utils.helper import dateValidation
 
 
 class Console:
@@ -194,6 +195,25 @@ class Console:
             print(event.getId(), event.getDate(), event.getTime(), event.getDescr())
             print("Was deleted!")
 
+    def __printEventsDate(self, date):
+        '''
+        prints the events at a certain date
+        :param date:
+        :return:
+        '''
+        dateErrors = dateValidation(date)
+        try:
+            if len(dateErrors) != 0:
+                raise ValueError("The date format is incorrect!")
+            eventsInDate = self.__serviceEvents.retEventAtDate(date)
+            if eventsInDate is None: raise ValueError("There are no events in this date!")
+            else:
+                print("Id   Date    Time      Description")
+                for event in eventsInDate:
+                    print(event.getId(), event.getDate(), event.getTime(), event.getDescr())
+        except ValueError as ex:
+            print(ex)
+
 
     def __modifyEvent(self):
         '''
@@ -218,25 +238,43 @@ class Console:
         self.addPeople()
         self.enrollPeople()
         while True:
-            cmd = input("Give command (Add, View, Search, Delete, Modify, Enroll, Print Enrolled, Exit): ")
+            cmd = input("Give command (Add, View, Search, Delete, Modify, Enroll, Print Enrolled, Print Evdate, Exit): ")
             if cmd.lower() == "add":
                 self.__addCmd()
+                continue
             if cmd.lower() == "view":
                 self.__viewCmd()
+                continue
             if cmd.lower() == 'search':
                 self.__searchCmd()
+                continue
             if cmd.lower() == 'modify':
                 self.__modifyCmd()
+                continue
             if cmd.lower() == 'delete':
                 self.__deleteCmd()
+                continue
             if cmd.lower() == 'enroll':
                 self.__enroll()
+                continue
             if cmd.lower() == 'print enrolled':
                 self.__printEnrolled()
+                continue
+            if cmd.lower() == 'print evdate':
+                self.__printDate()
+                continue
             if cmd.lower() == 'exit':
                 exit()
             else:
-                print("The command is incorrec! Please try again")
+                print("The command is incorrect! Please try again")
+
+    def __printDate(self):
+        '''
+        Prints the events at a certain date
+        :return:
+        '''
+        date = input("Give date: ")
+        self.__printEventsDate(date)
 
     def __printEnrolled(self):
         '''
@@ -310,6 +348,7 @@ class Console:
         self.__serviceEvents.createEvent('2', '12/11/2019', '12:40', 'Funeral')
         self.__serviceEvents.createEvent('3', '15/09/2020', '15:59', 'Birthday Party')
         self.__serviceEvents.createEvent('4', '12/10/2015', '14:30', 'Christmas Party')
+        self.__serviceEvents.createEvent('5', '20/12/2012', '17:56', 'Birthday Party')
 
     def enrollPeople(self):
         self.__enrollPerson('1', '2')
