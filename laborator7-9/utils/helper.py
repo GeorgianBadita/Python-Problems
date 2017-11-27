@@ -9,14 +9,14 @@ def rand_int():
     '''
     Returns a random integer between 6 and 200
     '''
-    return random.randint(6, 200)
+    return random.randint(6, 20000)
 
 def rand_string(length):
     '''
     Returns a random string
     '''
     letters = string.ascii_lowercase
-    return ''.join(random.choice(letters) for i in range(length))
+    return ''.join(random.choice(letters) for letter in range(length))
     
 
 

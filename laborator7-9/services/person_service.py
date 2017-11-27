@@ -73,6 +73,7 @@ class PersonService:
         :post: adds random people to the list
         '''
         for new_person in range(number):
+            
             rand_id = str(rand_int())
             rand_name = rand_string(7)
             rand_address = rand_string(10)

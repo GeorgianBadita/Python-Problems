@@ -21,7 +21,7 @@ class ConsoleUI:
         '''
         Function that prints the user interface
         '''
-        print("\t1. Add Person\n\t2. Add Event\n\t3. Delete Person\n\t4. Delete Event\n\t5. Update Person\n\t6. Update Event\n\t7. Print people\n\t8. Print events\n\t9. Search person\n\t10. Search event\n\t11. Enroll person to event\n\t12. Print person enrolled\n\t13. Add n random people\n\t x Exit")
+        print("\t1. Add Person\n\t2. Add Event\n\t3. Delete Person\n\t4. Delete Event\n\t5. Update Person\n\t6. Update Event\n\t7. Print people\n\t8. Print events\n\t9. Search person\n\t10. Search event\n\t11. Enroll person to event\n\t12. Print person enrolled\n\t13. Add n random people\n\t14. Print most people to events\n\t15. Print top 20% events with most participants\n\t x Exit")
         
 
     def __add_person(self):
@@ -229,6 +229,30 @@ class ConsoleUI:
         self.__person_service.gen_random_people_service(number)
     
     
+    def __print_most_participants(self):
+        '''
+        Function that prints people who participate to most events
+        '''
+        list_pers = self.__assig_service.print_most_participants()
+        print("    Id_person   Name    Address")
+        for person in list_pers:
+            print("\t" + person.get_id_pers() + "\t" +  person.get_name() + "\t" + person.get_adr())
+            
+        print("\n\n")
+    
+
+    def __first_20_percent(self):
+        '''
+        Function that prints the first 20% events with most people
+        '''
+        list_events = self.__assig_service.first_20_percent()
+        print("    Id_event    Descripton    Num_pers")
+        for event_num in range(len(list_events)//5):
+            print("\t" + list_events[event_num][0].get_id_event() + "\t" + list_events[event_num][0].get_descr() + "\t" + "\t" +  list_events[event_num][1])
+        print("\n\n") 
+    
+    
+    
     def show_ui(self):
         '''
         Function that controls the user interface actions
@@ -263,10 +287,12 @@ class ConsoleUI:
                 self.__sorted_enrolled()
             if cmd == '13':
                 self.__gen_random_people()
+            if cmd == '14':
+                self.__print_most_participants()
+            if cmd == '15':
+                self.__first_20_percent()
             if cmd == 'x':
                 exit()
-                
-                
     def __auto_add_pers_events_enroll(self):
         '''
         Function that gives data to the program
@@ -282,6 +308,7 @@ class ConsoleUI:
         ev2 = self.__event_service.create_event("2", "21/06/2013", "11:00", "Wedding")
         ev3 = self.__event_service.create_event("3", "17/06/2020", "12:40", "Birthday Party!")
         ev4 = self.__event_service.create_event("4", "21/03/2019", "09:30", "Wedding")
+        ev5 = self.__event_service.create_event("5", "19/07/2020", "11:40", "Funeral")
         
         self.__assig_service.create_assig(pers1, ev1)
         self.__assig_service.create_assig(pers1, ev2)
@@ -289,5 +316,5 @@ class ConsoleUI:
         self.__assig_service.create_assig(pers3, ev4)
         self.__assig_service.create_assig(pers4, ev1)
         self.__assig_service.create_assig(pers2, ev2)  
-        
+        self.__assig_service.create_assig(pers1, ev5)
     

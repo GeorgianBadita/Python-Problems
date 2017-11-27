@@ -5,12 +5,14 @@ Created on Nov 20, 2017
 '''
 from domain.person import Person
 from domain.event import Event
+from domain.assignment import Assignment
 from domain.validator import PersonValidator, EventValidator, ValidatorException
 from repository.person_repository import PersonRepository, PersonRepositoryException
 from repository.event_repository import EventRepository, EventRepositoryException
 from services.person_service import PersonService
 from services.event_service import EventService
 from utils.helper import hour_validation, date_validation
+#from _ast import Assign
 
 
 
@@ -228,6 +230,64 @@ def test_create_event_service():
         assert True
 
 
+
+
+def test_create_assignment():
+    '''
+    Functon that tests the create assignment feature
+    '''
+    
+    person = Person('1', 'Geo', 'Olanu')
+    event = Event('1', "20/07/2019", "10:58", "Wedding")
+    assignment = Assignment(person, event)
+    assert assignment.get_person() == person
+    assert assignment.get_event() == event
+    assert assignment.get_person().get_name() == 'Geo'
+    assert assignment.get_event().get_date() == '20/07/2019'
+
+
+def test_delete_event_service():
+    pass
+
+
+def test_delete_person_service():
+    pass
+
+
+
+
+
+
+def test_search_event_service():
+    pass
+
+
+
+
+def test_create_assignment_service():
+    pass
+
+
+def test_search_person_service():
+    pass
+
+
+
+
+def test_delete_assignment_service():
+    pass
+
+
+
+
+test_delete_event_service()
+test_create_assignment()
+test_create_assignment()
+test_delete_person_service()
+test_search_event_service()
+test_search_person_service()
+test_create_assignment_service()
+test_delete_assignment_service()
 test_create_event_service()
 test_create_person_service()
 test_event_repo()
