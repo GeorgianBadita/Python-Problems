@@ -7,42 +7,36 @@ class Assignment:
     '''
     Class which controls the enrollment functionality of the application 
     '''
-    def __init__(self, pers, event):
-        self.__id_ass = None
-        self.__pers = pers
-        self.__event = event
+    def __init__(self, id_person, id_event):
+        self.__id_pers = id_person
+        self.__id_event = id_event
         
-    def get_person(self):
+    def get_person_id(self):
         '''
         Function that gets the person from the assignment
         '''
-        return self.__pers
+        return self.__id_pers
     
-    def get_event(self):
+    def get_event_id(self):
         '''
         Function that gets the event from the assignment
         '''
-        return self.__event
+        return self.__id_event
     
-    def get_id_ass(self):
+    def __str__(self):
         '''
-        Function that gets the assignment id
+        Defint the str function for assignment
         '''
-        return self.__id_ass
+        print(self.__id_pers, self.__id_event)
     
-    def set_id_ass(self, id_ass):
-        '''
-        Function that sets the id of the assignment
-        '''
-        self.__id_ass = id_ass
         
     def __eq__(self, ot):
         '''
         Function which defines when 2 assignments are equal
         '''
-        if self.__pers == ot.__pers and self.__event == ot.__event:
+        if self.get_person_id() == ot.get_person_id() and self.get_event_id() == ot.get_event_id():
             return True
-        return False 
+        return False
         
     
     

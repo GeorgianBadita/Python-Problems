@@ -34,5 +34,12 @@ class Person:
         '''
         return self.__address
     
+    def __eq__(self, ot):
+        '''
+        Function that tells when 2 people are equal
+        '''
+        return self.__id == ot.__id
+        return self.__id == ot.__id and self.__name == ot.__name and self.__address == ot.__address
+    
 
     

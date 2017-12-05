@@ -19,6 +19,13 @@ def rand_string(length):
     return ''.join(random.choice(letters) for letter in range(length))
     
 
+def print_list(list):
+    '''
+    Function that prints a given list
+    '''
+    for item in list:
+        print(item)
+
 
 def read_int(text):
     while True:

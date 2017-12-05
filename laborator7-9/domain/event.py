@@ -54,6 +54,14 @@ class Event:
                 return True
         return False
         
+    def __eq__(self, ot):
+        '''
+        Tells when 2 Events are equal
+        '''
+        return self.__id == ot.__id
+        if self.__date == ot.__date and self.__time == ot.__time and self.__id == ot.__id and self.__descr == ot.__descr:
+            return True
+        return  False
     
     
     

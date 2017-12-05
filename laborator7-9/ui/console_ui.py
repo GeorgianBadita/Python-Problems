@@ -17,6 +17,7 @@ class ConsoleUI:
         self.__person_service = person_service
         self.__assig_service = assig_service
         
+        
     def __print_ui(self):
         '''
         Function that prints the user interface
@@ -158,7 +159,7 @@ class ConsoleUI:
         '''
         id_person = input("Give the person id: ")
         searched = self.__person_service.search_person_service(id_person)
-        if searched == None:
+        if searched is None:
             print("There's no person with this id!")
         else:
             print("    Id_person   Name    Address")
@@ -173,7 +174,7 @@ class ConsoleUI:
         '''
         id_event = input("Give the event id: ")
         searched = self.__event_service.search_event_service(id_event)
-        if searched == None:
+        if searched is None:
             print("There's no event with this id!")
         else:
             print("    Id_event        Date         Time    Description")
@@ -195,11 +196,13 @@ class ConsoleUI:
         if person is None or event is None:
             print("The event or the person doesn't exist!")
         else:
-            assignment = self.__assig_service.create_assig(person, event)
+            id_pers = person.get_id_pers()
+            id_event = event.get_id_event()
+            assignment = self.__assig_service.create_assig(id_pers, id_event)
             if assignment is None:
                 print("A person can't be enrolled to the same event twice!")
             else:
-                print(assignment.get_person().get_name() + " was enrolled in the event with id " + assignment.get_event().get_id_event())
+                print(person.get_name() + " was enrolled in the event with id " + event.get_id_event())
     
     def __sorted_enrolled(self):
         '''
@@ -210,13 +213,14 @@ class ConsoleUI:
         if person is None:
             print("There is no person with this id!")
         else:
-            person_events = self.__assig_service.get_pers_enrolled_serv(person)
+            person_events = self.__assig_service.get_pers_enrolled_serv(person.get_id_pers())
             sorted_person_events = self.__assig_service.sort_pers_enrolled_serv(person_events)
             if sorted_person_events is not None:
                 print("Person ", person.get_name(), " is enrolled in: ")
                 print("    Id_event        Date         Time    Description")
                 for event in sorted_person_events:
-                    print("\t" + event.get_id_event() + "\t" + event.get_date() + "\t" + event.get_time() + "\t" + event.get_descr())
+                    event_ref = self.__event_service.search_event_service(event)
+                    print("\t" + event_ref.get_id_event() + "\t" + event_ref.get_date() + "\t" + event_ref.get_time() + "\t" + event_ref.get_descr())
                 print("\n\n")
             else: print("Person is not enrolled in any event!")
     
@@ -236,7 +240,8 @@ class ConsoleUI:
         list_pers = self.__assig_service.print_most_participants()
         print("    Id_person   Name    Address")
         for person in list_pers:
-            print("\t" + person.get_id_pers() + "\t" +  person.get_name() + "\t" + person.get_adr())
+            person_ref = self.__person_service.search_person_service(person)
+            print("\t" + person_ref.get_id_pers() + "\t" +  person_ref.get_name() + "\t" + person_ref.get_adr())
             
         print("\n\n")
     
@@ -247,20 +252,21 @@ class ConsoleUI:
         '''
         list_events = self.__assig_service.first_20_percent()
         print("    Id_event    Descripton    Num_pers")
-        for event_num in range(len(list_events)//5):
-            print("\t" + list_events[event_num][0].get_id_event() + "\t" + list_events[event_num][0].get_descr() + "\t" + "\t" +  list_events[event_num][1])
+        for event in list_events:
+            event_ref = self.__event_service.search_event_service(event[0])
+            print("\t" + event_ref.get_id_event() + "\t" + event_ref.get_descr() + "\t" + "\t" +  event[1])
         print("\n\n") 
-    
-    
     
     def show_ui(self):
         '''
         Function that controls the user interface actions
         '''
-        self.__auto_add_pers_events_enroll()
+        
+        self.__auto_add_pers_events_enroll_mem_repo()
         while True:
             self.__print_ui()
             cmd = input("Give a command: ")
+            
             if cmd == '1':
                 self.__add_person()
             if cmd == '2':
@@ -293,7 +299,8 @@ class ConsoleUI:
                 self.__first_20_percent()
             if cmd == 'x':
                 exit()
-    def __auto_add_pers_events_enroll(self):
+            
+    def __auto_add_pers_events_enroll_mem_repo(self):
         '''
         Function that gives data to the program
         '''
@@ -310,11 +317,12 @@ class ConsoleUI:
         ev4 = self.__event_service.create_event("4", "21/03/2019", "09:30", "Wedding")
         ev5 = self.__event_service.create_event("5", "19/07/2020", "11:40", "Funeral")
         
-        self.__assig_service.create_assig(pers1, ev1)
-        self.__assig_service.create_assig(pers1, ev2)
-        self.__assig_service.create_assig(pers2, ev3)
-        self.__assig_service.create_assig(pers3, ev4)
-        self.__assig_service.create_assig(pers4, ev1)
-        self.__assig_service.create_assig(pers2, ev2)  
-        self.__assig_service.create_assig(pers1, ev5)
+        self.__assig_service.create_assig('1', '1')
+        self.__assig_service.create_assig('1', '2')
+        self.__assig_service.create_assig('2', '3')
+        self.__assig_service.create_assig('3', '4')
+        self.__assig_service.create_assig('4', '1')
+        self.__assig_service.create_assig('2', '2')  
+        self.__assig_service.create_assig('1', '5')
+        self.__assig_service.create_assig('3', '1')
     

@@ -12,7 +12,7 @@ class AssignmentService:
     def __init__(self, assig_repository):
         self.__rep = assig_repository
         
-    def create_assig(self, person, event):
+    def create_assig(self, id_person, id_event):
         '''
         store an event
         :param: person - Person 
@@ -21,7 +21,7 @@ class AssignmentService:
         :return: the new assignment added
         '''
         #create new_assignment
-        new_assig = Assignment(person, event)
+        new_assig = Assignment(id_person, id_event)
         #add the assignment into using repository
         return self.__rep.store_assig(new_assig)
         
@@ -32,20 +32,30 @@ class AssignmentService:
         '''
         return self.__rep.get_all_assign()
     
-    def get_pers_enrolled_serv(self, person):
+    def get_pers_enrolled_serv(self, person_id):
         '''
         Function that gets all events in which a person is enrolled
         :return: a list of events in which the person is enrolled if 
         there are any, else returns None
         '''
-        return self.__rep.get_pers_enrolled(person)
+        list_events = []
+        for assignment in self.get_all_assign_service():
+            print(person_id)
+            if person_id == assignment.get_person_id():
+                list_events.append(assignment.get_event_id())
+        
+        if len(list_events) > 0:
+            return list_events
+        return None
     
     def sort_pers_enrolled_serv(self, eventsList):
         '''
         Function that sorts all the events of a person by description and date
         :return: a new list representing the first list sorted
         '''
-        return self.__rep.sort_pers_enrolled(eventsList)
+        if eventsList is None:
+            return None
+        return sorted(eventsList)
     
     
     def search_assign_serv(self, assignment):
@@ -64,10 +74,10 @@ class AssignmentService:
         list_pers = self.get_all_assign_service()
         
         for assig in list_pers:
-            if assig.get_person() in dict_pers:
-                dict_pers[assig.get_person()] += 1
+            if assig.get_person_id() in dict_pers:
+                dict_pers[assig.get_person_id()] += 1
             else:
-                dict_pers[assig.get_person()] = 1
+                dict_pers[assig.get_person_id()] = 1
             
         max_pers = 0
         
@@ -86,15 +96,16 @@ class AssignmentService:
     def first_20_percent(self):
         '''
         Function that returns a list representing the first 20% events with most participants
+        :return: Returns a matrix of events in which list_events[0] - the event id, list_events[1]- number of participants
         '''
         list_events = self.get_all_assign_service()
         dict_events = {}   
             
         for assig in list_events:
-            if assig.get_event() in dict_events:
-                dict_events[assig.get_event()] += 1
+            if assig.get_event_id() in dict_events:
+                dict_events[assig.get_event_id()] += 1
             else:
-                dict_events[assig.get_event()] = 1
+                dict_events[assig.get_event_id()] = 1
             
         list_events = []
         
@@ -103,7 +114,9 @@ class AssignmentService:
         
         list_events = sorted(list_events, key = lambda x: x[1], reverse = True)
         
-        return list_events
+        index_ret = len(list_events)//5
+        
+        return list_events[0:index_ret]
             
         
             
