@@ -16,6 +16,7 @@ from pygments.lexers.textfmts import TodotxtLexer
 from unittest.case import TestCase
 from repository.file_repo import PersonFileRepository, EventFileRepository,\
     AssignmentFileRepository
+from setuptools.py31compat import unittest_main
 #from _ast import Assign
 
 
@@ -322,69 +323,6 @@ class test_store_assig(TestCase):
       
 
     
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'''
-was about to complete this part, but I have to do pyUnitTests
-'''
-#TODO: COMPLETE PYUNIT TESTS
-
-def test_delete_event_service():
-    pass
-
-
-def test_delete_person_service():
-    pass
-
-
-
-
-
-
-def test_search_event_service():
-    pass
-
-
-
-
-def test_create_assignment_service():
-    pass
-
-
-def test_search_person_service():
-    pass
-
-
-
-
-def test_delete_assignment_service():
-    pass
-
-
-
-
+    if __name__ == "__main__":
+        unittest_main()
 

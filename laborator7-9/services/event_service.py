@@ -65,6 +65,7 @@ class EventService:
         Function that searches for an event by the given id
         :return: the event if it exists, None otherwise
         '''
-        return self.__rep.search_event(id_event)
+        lst = self.get_all_events_service()
+        return self.__rep.search_event(lst, id_event)
     
         

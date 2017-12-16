@@ -65,7 +65,8 @@ class PersonService:
         Function that searches for a person by the given id
         :return: the person if it exists, None otherwise
         '''  
-        return self.__rep.search_person(id_pers)
+        lst = self.get_all_people_service()
+        return self.__rep.search_person(lst, id_pers)
     
     def gen_random_people_service(self, number):
         '''

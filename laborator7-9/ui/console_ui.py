@@ -254,7 +254,7 @@ class ConsoleUI:
         print("    Id_event    Descripton    Num_pers")
         for event in list_events:
             event_ref = self.__event_service.search_event_service(event[0])
-            print("\t" + event_ref.get_id_event() + "\t" + event_ref.get_descr() + "\t" + "\t" +  event[1])
+            print("     " + event_ref.get_id_event() + "          " + event_ref.get_descr() + "\t" + "\t" +  event[1])
         print("\n\n") 
     
     def show_ui(self):

@@ -115,3 +115,50 @@ def get_hour(hour):
     mm = mm * 10 + int(hour[4])
 
     return hh, mm
+
+
+def make_key(key):
+    '''
+    Function that returns the key of the sorting function
+    '''
+    if key is None:
+        return lambda x:x
+    elif key != None:
+        return key
+
+def quick_sort(list, key = None, reverse = False):
+    '''
+    Quicksort using list comprehension
+    '''
+    key = make_key(key)
+    if len(list) <= 1:
+        return list
+    else:
+        pivot = list[0]
+        lower = quick_sort([x for x in list[1:] if key(x) < key(pivot)], key, reverse)
+        greater = quick_sort([x for x in list[1:] if key(x) >= key(pivot)], key, reverse)
+        
+        if reverse == False:
+            return lower + [pivot] + greater
+        elif reverse == True:
+            return  greater + [pivot] + lower
+    
+
+def gnome_sort(list, key = None, reverse = False):
+    '''
+    Function to implement the gnome sort
+    '''
+    key = make_key(key)
+    pos = 0
+    while pos < len(list):
+        if pos == 0 or key(list[pos]) >= key(list[pos - 1]):
+            pos = pos + 1
+        else:
+            list[pos],list[pos - 1] = list[pos - 1], list[pos]
+            pos = pos - 1
+    
+    if reverse == False:
+        return list
+    elif reverse == True:
+        return list[::-1]
+

@@ -71,16 +71,17 @@ class EventRepository:
         return None
     
     
-    def search_event(self, id_event):
+    def search_event(self, lst, id_event):
         '''
         Function that searches for an event after a given id
         :return: returns the event if it exists, otherwise it returns None
         '''
-        for event in self.__list:
-            if id_event == event:
-                return self.__list[event]
-            
-        return None
+        try:
+            if lst[0].get_id_event() == id_event:
+                return lst[0]
+            return self.search_event(lst[1:], id_event)
+        except IndexError:
+            return None
     
     
     

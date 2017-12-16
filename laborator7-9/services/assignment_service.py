@@ -4,6 +4,8 @@ Created on Nov 20, 2017
 @author: Geo
 '''
 from domain.assignment import Assignment
+from utils.helper import quick_sort, gnome_sort
+
 
 class AssignmentService:
     '''
@@ -55,7 +57,7 @@ class AssignmentService:
         '''
         if eventsList is None:
             return None
-        return sorted(eventsList)
+        return quick_sort(eventsList,  reverse = True)
     
     
     def search_assign_serv(self, assignment):
@@ -112,7 +114,7 @@ class AssignmentService:
         for event in dict_events:
             list_events.append([event, str(dict_events[event])])
         
-        list_events = sorted(list_events, key = lambda x: x[1], reverse = True)
+        list_events = gnome_sort(list_events, key = lambda x: x[1], reverse = True)
         
         index_ret = len(list_events)//5
         

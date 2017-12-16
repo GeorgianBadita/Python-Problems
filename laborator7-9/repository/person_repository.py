@@ -71,16 +71,17 @@ class PersonRepository:
             
         return None
     
-    def search_person(self, id_person):
+    def search_person(self, lst, id_person):
         '''
         Function that searches for a person after a given id
         :return: returns the person if it exists, otherwise it returns None
         '''
-        for person in self.__list:
-            if id_person == person:
-                return self.__list[person]
-            
-        return None
+        try:
+            if lst[0].get_id_pers() == id_person:
+                return lst[0]
+            return self.search_person(lst[1:], id_person)
+        except IndexError:
+            return None
     
     
         

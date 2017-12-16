@@ -93,18 +93,19 @@ class PersonFileRepository:
         self.__storeToFile(allP)
         return pers
             
-    def search_person(self, id):
+    def search_person(self, list, id):
         '''
         Find the person for a given id
         id - string
         return person with the given id or None if the person doesn't exist
         '''
-        people = self.__loadFromFile()
-        for pers in people:
-            if pers.get_id_pers() == id:
-                #print(pers.get_id_pers(), pers.get_name(), pers.get_adr())
-                return pers
-        return None
+        try:
+            if list[0].get_id_pers() == id:
+                return list[0]
+            return self.search_person(list[1:], id)
+        except IndexError:
+            return None
+        
     
     def update_person(self, new_person):
         '''
@@ -220,17 +221,19 @@ class EventFileRepository:
         self.__storeToFile(allE)
         return event
             
-    def search_event(self, id):
+    def search_event(self, lst,  id):
         '''
         Find the event for a given id
         id - string
         return event with the given id or None if the event doesn't exist
         '''
-        events = self.__loadFromFile()
-        for event in events:
-            if event.get_id_event() == id:
-                return event
-        return None
+        try:
+            if lst[0].get_id_event() == id:
+                return lst[0]
+            return self.search_event(lst[1:], id)
+        except IndexError:
+            return None
+        
     
     def update_event(self, new_event):
         '''
