@@ -54,7 +54,7 @@ class test_hour_validation(TestCase):
         '''
         errors = hour_validation("25:60")
         self.assertEqual(len(errors), 2)
-        errors = hour_validation("10:61")
+        errors = hour_validation("10:60")
         self.assertEqual(len(errors),1)
         errors = hour_validation("9:59")
         self.assertEqual(len(errors),1)
@@ -126,7 +126,7 @@ class test_event_validator(TestCase):
             validator.validate(event)
         
 
-class test_person_repo():
+class test_person_repo(TestCase):
 
     def test_person_repo(self):
         '''
@@ -248,14 +248,12 @@ class test_store(TestCase):
     def test_store(self):
         
         self.assertEqual(self.repo.size(), 3)
-        self.assertEqual(self.repo.search_person("2"), self.person1)
+        self.assertEqual(self.repo.search_person(self.repo.get_all_people(),"2"), self.person1)
         #verify if the person is stored in the file
         self.assertEqual(self.repo2.size(), 3)
-        self.assertEqual(self.repo2.search_person("3"),self. person2)
-
-
+        self.assertEqual(self.repo2.search_person(self.repo.get_all_people(),"3"),self. person2)
+        
 class test_store_ev(TestCase):
-    
     
     def setUp(self):
         self.fileName = "testevents.txt"
@@ -273,11 +271,11 @@ class test_store_ev(TestCase):
         
     def test_store_ev(self):
         self.assertEqual(self.repo.size(), 3)
-        self.assertEqual(self.repo.search_event("2"), self.event2)    
+        self.assertEqual(self.repo.search_event(self.repo.get_all_events(),"2"), self.event2)    
         #verify if the person is stored in the file
         self.repo2 = EventFileRepository(self.fileName)
         self.assertEqual(self.repo2.size(), 3)
-        self.assertEqual(self.repo2.search_event("2"), self.event2)
+        self.assertEqual(self.repo2.search_event(self.repo.get_all_events(),"2"), self.event2)
         
 
 

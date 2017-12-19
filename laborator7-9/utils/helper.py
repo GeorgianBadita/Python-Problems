@@ -126,17 +126,18 @@ def make_key(key):
     elif key != None:
         return key
 
-def quick_sort(list, key = None, reverse = False):
+
+def quick_sort(list, *, key = lambda x : x, reverse = False):
     '''
     Quicksort using list comprehension
     '''
-    key = make_key(key)
+    #key = make_key(key)
     if len(list) <= 1:
         return list
     else:
         pivot = list[0]
-        lower = quick_sort([x for x in list[1:] if key(x) < key(pivot)], key, reverse)
-        greater = quick_sort([x for x in list[1:] if key(x) >= key(pivot)], key, reverse)
+        lower = quick_sort([x for x in list[1:] if key(x) < key(pivot)], key = key, reverse = reverse)
+        greater = quick_sort([x for x in list[1:] if key(x) >= key(pivot)], key = key, reverse = reverse)
         
         if reverse == False:
             return lower + [pivot] + greater
@@ -144,11 +145,11 @@ def quick_sort(list, key = None, reverse = False):
             return  greater + [pivot] + lower
     
 
-def gnome_sort(list, key = None, reverse = False):
+def gnome_sort(list, *, key = lambda x:x, reverse = False):
     '''
     Function to implement the gnome sort
     '''
-    key = make_key(key)
+    #key = make_key(key)
     pos = 0
     while pos < len(list):
         if pos == 0 or key(list[pos]) >= key(list[pos - 1]):
